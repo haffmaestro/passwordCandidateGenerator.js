@@ -15,8 +15,13 @@ var results = []
 
 run();
 function run(){
-  generateTree("", recipe);
-  assert.equal(countPermutations(recipe), results.length);
+  results = generateTree("", recipe);
+
+  try{
+    assert.equal(countPermutations(recipe), results.length);
+  }catch(e){
+    console.log(e);    
+  }
 
   fs.writeFile(resultPath, JSON.stringify(results, null, 4), function(err){});
   console.log("Successfully generated: "+results.length+" candidates");
@@ -56,8 +61,7 @@ function checkTypes(array){
  */
 function generateTree(sofar, array){
   if(!array.length) {
-    results.push(sofar)
-    return;
+    return sofar;
   }
 
   if(!checkTypes(array)){
@@ -68,8 +72,9 @@ function generateTree(sofar, array){
   var current = array[0];
   var rest = array.slice(1);
 
-  current.forEach(function(candidatePart){
-    generateTree(sofar+candidatePart, rest);
-  })
-
+  return current.map(function(candidatePart){
+    return generateTree(sofar+candidatePart, rest);
+  }).reduce(function(memo, curr){
+    return memo.concat(curr);
+  },[]);
 }
