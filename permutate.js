@@ -75,6 +75,11 @@ function generateTree(sofar, array){
   return current.map(function(candidatePart){
     return generateTree(sofar+candidatePart, rest);
   }).reduce(function(memo, curr){
+    // To avoid nested arrays this works by concatenating all recipes found so far
+    // Doing this for every step feels like there should be a better way
+    // 
+    // Feels weird that I'm handling nested array in the recipe
+    // Handling two levels of arrays there
     return memo.concat(curr);
   },[]);
 }
